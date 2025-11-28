@@ -1,5 +1,5 @@
 # ***Exposé Model De Conception***
-## *Pattern en Facade*
+# *Pattern en Facade*
 
 
 ## 1. Introduction / Définition
@@ -95,14 +95,104 @@ public class Main {
 | Cache la complexité technique pour aider les développeurs débutants. | Impact potentiel sur les performances à cause de la couche d’abstraction. |
 ### Mauvaise pratique
 Il existe aussi différentes situations dans lesquelles il ne faut pas utiliser ce modèle : 
-le système est trop facile.
 
-besoin d’avoir un accès direct à certaines fonctionnalités. 
-besoin de faire des changements internes profonds.
+Le système est trop facile.
+
+Besoin d’avoir un accès direct à certaines fonctionnalités. 
+
+Besoin de faire des changements internes profonds.
 
 
-## 7. Cas d’Usage Réalisé
+# *Pattern avec Visiteur*
 
+## 1. Introduction / Définition
+Le pattern Visiteur est un patron de conception qui permet de :
+
+Ajouter de nouvelles opérations sur une hiérarchie de classes sans les modifier, et de séparer la structure des données (les éléments) et les algorithmes qui s’y appliquent (les visiteurs)
+
+## 2. Contexte d’Utilisation
+
+Le Visiteur est utile quand on a une structure d’objets stable tel que des arbre syntaxique, document, produits, etc...) mais que les traitements à appliquer à ces objets évoluent souvent (export, rendu, statistiques, règles métier, etc.).​
+
+Il est particulièrement adapté aux structures hiérarchiques complexes (arbres ou graphes) où l’on souhaite appliquer plusieurs opérations différentes sans mélanger la logique métier de chaque élément.
+
+## 3. Structure du Pattern
+
+<img width="1046" height="702" alt="azeeza" src="https://github.com/user-attachments/assets/68f1259f-bd3a-4b38-bbad-799ca934ceae" />
+
+## 4. Exemple de Code
+
+```java 
+class Circle implements Shape {
+    double radius;
+
+    Circle(double radius) { this.radius = radius; }
+
+    @Override
+    public void accept(ShapeVisitor visitor) {
+        visitor.visit(this); 
+    }
+}
+
+class Square implements Shape {
+    double side;
+
+    Square(double side) { this.side = side; }
+
+    @Override
+    public void accept(ShapeVisitor visitor) {
+        visitor.visit(this);
+    }
+}
+// Visiteur qui calcule l'aire d'un cercle
+class AreaVisitor implements ShapeVisitor {
+    @Override
+    public void visit(Circle c) {
+        double area = Math.PI * c.radius * c.radius;
+        System.out.println("Aire du cercle : " + area);
+    }
+//Visiteur qui calcule l'aire d'un carré
+    @Override
+    public void visit(Square s) {
+        double area = s.side * s.side;
+        System.out.println("Aire du carré : " + area);
+    }
+}
+
+// 2) Un visiteur qui affiche les formes
+class PrintVisitor implements ShapeVisitor {
+    @Override
+    public void visit(Circle c) {
+        System.out.println("Cercle de rayon " + c.radius);
+    }
+
+    @Override
+    public void visit(Square s) {
+        System.out.println("Carré de côté " + s.side);
+    }
+} 
+```
+
+## 5. Avantages / Inconveniant
+
+| Avantages | Inconvénients |
+|-----------|----------------|
+| Ajout d’un nouveau comportement pouvant accepter des objets de différentes classes sans les modifier. | Vous devez mettre à jour les visiteurs chaque fois qu’une classe est ajoutée ou retirée. |
+| Possibilité de regrouper plusieurs comportements dans une seule classe (plusieurs versions d’un même comportement). | Les visiteurs n’ont parfois pas les accès nécessaires aux attributs ou méthodes privés. |
+| Peut garder en mémoire des données lorsqu’il parcourt la structure. | Plus il y a de classes, plus il y a de visiteurs, ce qui peut rendre le code complexe. |
+| Les objets conservent leurs données et les visiteurs contiennent les actions : pour modifier une action, il suffit de modifier le visiteur. | Peut violer les règles du principe d’encapsulation. |
+| Pour ajouter une nouvelle opération, il suffit de créer un nouveau visiteur. | Lors de l’ajout de nouveaux types d’objets, il faut modifier le visiteur ou l’interface Visitor. |
+| Facile à maintenir. |  |
+| Le visiteur s’adapte au type de l’objet qu’il visite. |  |
+| Chaque visiteur a son propre comportement, ce qui permet une bonne organisation du code. |  |
+
+Il existe aussi différentes situations dans lesquelles il ne faut pas utiliser ce modèle :
+
+Si tu dois souvent changer ta hiérarchie de classe.
+
+Quand la structure des objets est complexe. 
+
+Quand les opérations sont simples et peu nombreuses, elles vont complexifier le code pour rien.
 
 *Source :*
 
@@ -113,3 +203,7 @@ https://www.baeldung.com/java-visitor-pattern
 https://www.ionos.fr/digitalguide/sites-internet/developpement-web/quest-ce-quun-facade-pattern/#:~:text=Le%20patron%20de%20façade%20est,Reusable%20Object-Oriented%20Software%20».
 
 https://refactoring.guru/fr/design-patterns/facade
+
+https://refactoring.guru/fr/design-patterns/visitor 
+
+https://www.sfeir.dev/back/les-design-patterns-comportementaux-visiteur/#:~:text=de%20données%20complexes-,Avantages,modifier%20les%20classes%20des%20objets.
